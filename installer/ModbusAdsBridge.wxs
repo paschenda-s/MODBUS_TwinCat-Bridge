@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Product Id="*" 
+           Name="TwinBridge Modbus RTU Bridge" 
+           Language="1033" 
+           Version="1.0.0.0" 
+           Manufacturer="YourCompany" 
+           UpgradeCode="12345678-1234-1234-1234-123456789012">
+    
+    <Package InstallerVersion="200" 
+             Compressed="yes" 
+             InstallScope="perMachine" 
+             Description="TwinBridge Modbus RTU Bridge Service"/>
+
+    <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+    <MediaTemplate EmbedCab="yes" />
+
+    <Feature Id="ProductFeature" Title="TwinBridge Service" Level="1">
+      <ComponentGroupRef Id="ProductComponents" />
+      <ComponentRef Id="ServiceComponent" />
+    </Feature>
+
+    <!-- Directory structure -->
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFilesFolder">
+        <Directory Id="INSTALLFOLDER" Name="TwinBridge">
+          <Directory Id="BINDIR" Name="bin" />
+        </Directory>
+      </Directory>
+    </Directory>
+
+    <!-- Service Component -->
+    <DirectoryRef Id="INSTALLFOLDER">
+      <Component Id="ServiceComponent" Guid="87654321-4321-4321-4321-210987654321">
+        <ServiceInstall Id="TwinBridgeService"
+                       Name="TwinBridge"
+                       DisplayName="TwinBridge Modbus RTU Bridge"
+                       Description="Bridge service for connecting Modbus RTU devices to TwinCAT ADS"
+                       Type="ownProcess"
+                       Start="auto"
+                       Account="LocalSystem"
+                       ErrorControl="normal"
+                       Arguments=""
+                       Interactive="no">
+          <ServiceDependency Id="Tcpip" />
+        </ServiceInstall>
+        <ServiceControl Id="StartTwinBridgeService"
+                       Name="TwinBridge"
+                       Start="install"
+                       Stop="both"
+                       Remove="uninstall"
+                       Wait="yes" />
+      </Component>
+    </DirectoryRef>
+
+    <!-- Heat-generated components will be inserted here -->
+    <ComponentGroup Id="ProductComponents" Directory="BINDIR">
+      <!-- This will be populated by heat.exe during build -->
+    </ComponentGroup>
+
+  </Product>
+</Wix>
